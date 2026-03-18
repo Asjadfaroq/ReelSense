@@ -1,4 +1,4 @@
-# ReelSense: AI-Enhanced Movie Discovery Platform
+# ReelSense: AI-Enhanced Movie Discovery Platform!
 
 ## 📝 Project Overview
 
