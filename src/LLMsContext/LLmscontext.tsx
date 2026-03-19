@@ -72,10 +72,14 @@ export const LLMsProvider = ({ children }: any) => {
   const [responsesuggestion, setresponsesuggestion] = useState<MovieSuggestion[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  // Use relative URLs for Kubernetes (goes through nginx proxy)
-  const apiUrl = (typeof window !== 'undefined' && window.env?.API_URL) 
-    ? window.env.API_URL 
-    : import.meta.env.VITE_API_URL || '';
+  // Use runtime API URL (Render / Vercel) or fall back to relative paths.
+  // Normalize to avoid double slashes when concatenating.
+  const rawApiUrl =
+    (typeof window !== 'undefined' && (window as any).env?.API_URL)
+      ? (window as any).env.API_URL
+      : import.meta.env.VITE_API_URL || '';
+
+  const apiUrl = rawApiUrl.replace(/\/+$/, ''); // remove trailing slashes
 
   const LLMssugetion = async (inputque: string) => {
     if (!inputque.trim()) {
@@ -87,7 +91,8 @@ export const LLMsProvider = ({ children }: any) => {
       setError(null);
       console.log("inputque", inputque);
 
-      const response = await axios.post(`${apiUrl}/api/gemini` , {inputque});
+      const url = apiUrl ? `${apiUrl}/api/gemini` : '/api/gemini';
+      const response = await axios.post(url, { inputque });
 
       // console.log('Response from server:', response);
 
