@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import AuthContext from '../authContext/authcontext';
@@ -67,9 +68,15 @@ const Login = () => {
       </div>
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-12 sm:py-16">
-        <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
           {/* Left supporting glass card */}
-          <section className="hidden lg:block rounded-3xl border border-white/10 bg-white/4 backdrop-blur-xl p-10 shadow-[0_0_70px_rgba(249,115,22,0.08)]">
+          <motion.section
+            initial={{ opacity: 0, x: -40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="hidden lg:block rounded-3xl border border-white/10 bg-white/4 backdrop-blur-xl p-10 shadow-[0_0_70px_rgba(249,115,22,0.08)] relative overflow-hidden"
+          >
+            <div className="pointer-events-none absolute -top-24 -right-32 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.16),transparent_70%)] blur-xl" />
             <div className="flex items-center gap-3">
               <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10">
                 <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
@@ -94,15 +101,15 @@ const Login = () => {
             </p>
 
             <div className="mt-10 space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 hover:border-amber-300/60 transition-colors">
                 <div className="text-sm font-semibold">Smart search</div>
                 <div className="mt-1 text-sm text-slate-300/90">Real-time results with clean, fast UX.</div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 hover:border-amber-300/60 transition-colors">
                 <div className="text-sm font-semibold">AI insights</div>
                 <div className="mt-1 text-sm text-slate-300/90">Similar titles explained in plain language.</div>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4 hover:border-amber-300/60 transition-colors">
                 <div className="text-sm font-semibold">Secure sessions</div>
                 <div className="mt-1 text-sm text-slate-300/90">Short-lived access tokens with 7-day refresh.</div>
               </div>
@@ -116,11 +123,18 @@ const Login = () => {
                 Sign in and your recommendations get smarter.
               </div>
             </div>
-          </section>
+          </motion.section>
 
           {/* Right main login glass card */}
           <div className="flex flex-col items-center">
-          <section className="rounded-3xl border border-white/10 bg-white/4 backdrop-blur-xl p-6 shadow-[0_0_70px_rgba(249,115,22,0.09)] sm:p-8">
+          <motion.section
+            initial={{ opacity: 0, y: 30, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.55, ease: 'easeOut', delay: 0.1 }}
+            className="rounded-3xl border border-white/10 bg-white/4 backdrop-blur-xl p-6 shadow-[0_0_90px_rgba(249,115,22,0.16)] sm:p-8 relative overflow-hidden"
+          >
+            <div className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-[radial-gradient(circle_at_center,rgba(249,115,22,0.18),transparent_70%)] blur-xl" />
+            <div className="pointer-events-none absolute -top-16 right-0 h-40 w-40 rounded-full bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.22),transparent_70%)] blur-xl" />
             <div className="flex items-start justify-between gap-6">
               <div>
                 <div className="text-xs font-semibold tracking-widest text-orange-200/90 uppercase">
@@ -202,7 +216,7 @@ const Login = () => {
                   className={`w-full rounded-2xl bg-gradient-to-r from-orange-300 via-amber-200 to-yellow-300 text-slate-950 py-3 font-semibold shadow-lg shadow-orange-500/12 transition-all duration-200 ${
                   auth?.authStatus?.isloading || !input.password
                     ? 'opacity-60 cursor-not-allowed'
-                    : 'hover:brightness-110 hover:shadow-orange-500/30'
+                    : 'hover:brightness-110 hover:shadow-orange-500/30 hover:-translate-y-[1px]'
                 }`}
               >
                 {auth?.authStatus?.isloading ? 'Signing in...' : 'Sign In'}
@@ -235,7 +249,7 @@ const Login = () => {
               </div>
 
             </form>
-          </section>
+          </motion.section>
           <div className="mt-6 text-center text-[12px] leading-relaxed text-slate-500">
             © 2026 ReelSense
             <br />
