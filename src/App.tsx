@@ -332,10 +332,10 @@ function App() {
             <div>
               <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
               <ul className="space-y-2 text-slate-400">
-                <li><a href="#" className="hover:text-indigo-400 transition-colors">Home</a></li>
-                <li><a href="#" className="hover:text-indigo-400 transition-colors">Movies</a></li>
-                <li><a href="#" className="hover:text-indigo-400 transition-colors">TV Shows</a></li>
-                <li><a href="#" className="hover:text-indigo-400 transition-colors">Top Rated</a></li>
+                <li><Link to="/" className="hover:text-indigo-400 transition-colors">Home</Link></li>
+                <li><Link to="/" className="hover:text-indigo-400 transition-colors">Movies</Link></li>
+                <li><Link to="/top-detail" className="hover:text-indigo-400 transition-colors">TV Shows</Link></li>
+                <li><Link to="/top-detail" className="hover:text-indigo-400 transition-colors">Top Rated</Link></li>
               </ul>
             </div>
             <div>
@@ -347,10 +347,10 @@ function App() {
               </ul>
               <div className="flex gap-4 mt-6">
                 {['twitter', 'facebook', 'instagram', 'github'].map((social) => (
-                  <a key={social} href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                  <Link key={social} to="/about" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
                     <span className="sr-only">{social}</span>
                     <div className="w-5 h-5 bg-current rounded-sm opacity-50" />
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>

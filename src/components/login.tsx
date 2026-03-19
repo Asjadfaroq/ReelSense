@@ -1,10 +1,12 @@
 import { useState, useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import AuthContext from '../authContext/authcontext';
 
 const Login = () => {
   // Get auth context
   const auth = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // Form state
   const [input, setInput] = useState({
@@ -35,6 +37,24 @@ const Login = () => {
       }
     };
   }, []);
+
+  // If already logged in, prevent access to /login and redirect to home.
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode<{ exp?: number }>(token);
+        // If token is expired, let the user authenticate again (refresh flow will handle API calls).
+        if (decoded?.exp && decoded.exp * 1000 < Date.now()) {
+          return;
+        }
+      } catch {
+        // If token can't be decoded, fall back to redirect behavior.
+      }
+
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -137,9 +157,9 @@ const Login = () => {
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-purple-600 hover:text-purple-500">
+                <span className="font-medium text-purple-600 opacity-70">
                   Forgot password?
-                </a>
+                </span>
               </div>
             </div>
 

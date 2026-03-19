@@ -148,10 +148,10 @@ const About = () => {
             </div>
             
             <div className="social-links">
-              <a href="#" className="social-link">Facebook</a>
-              <a href="#" className="social-link">Twitter</a>
-              <a href="#" className="social-link">Instagram</a>
-              <a href="#" className="social-link">LinkedIn</a>
+              <span className="social-link">Facebook</span>
+              <span className="social-link">Twitter</span>
+              <span className="social-link">Instagram</span>
+              <span className="social-link">LinkedIn</span>
             </div>
           </div>
         </section>
