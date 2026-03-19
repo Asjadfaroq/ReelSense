@@ -7,7 +7,6 @@ import { twMerge } from 'tailwind-merge';
 import AuthContext from '../authContext/authcontext';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const auth = useContext(AuthContext);
@@ -17,26 +16,6 @@ const Navbar = () => {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-
-  // Handle scroll event to change navbar appearance
-  useEffect(() => {
-    let rafId: number | null = null;
-    const handleScroll = () => {
-      if (rafId != null) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = null;
-        const next = window.scrollY > 50;
-        setIsScrolled((prev) => (prev === next ? prev : next));
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true } as any);
-    handleScroll();
-    return () => {
-      window.removeEventListener('scroll', handleScroll as any);
-      if (rafId != null) window.cancelAnimationFrame(rafId);
-    };
-  }, []);
 
   // Keep navbar actions in sync with login/logout
   useEffect(() => {
@@ -59,10 +38,7 @@ const Navbar = () => {
   return (
     <nav
       className={twMerge(
-        'fixed top-0 left-0 w-full z-50 transition-colors duration-300 border-b border-transparent py-4',
-        isScrolled
-          ? 'bg-slate-900/90 backdrop-blur-md border-slate-800 shadow-lg'
-          : 'bg-transparent'
+        'fixed top-0 left-0 w-full z-50 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md shadow-lg py-4'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
