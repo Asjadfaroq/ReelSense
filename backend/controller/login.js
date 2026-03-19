@@ -16,7 +16,6 @@ async function handleloginuser(req, res) {
 
         // Find user by email
         let user = await usersignup.findOne({ email: email });
-        // Allow login using username (frontend may send username in the "email" field)
         if(!user) {
             user = await usersignup.findOne({ username: email });
         }
