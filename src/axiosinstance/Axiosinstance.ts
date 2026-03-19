@@ -10,6 +10,12 @@ const axiosInstance = axios.create({
     baseURL: apiUrl, // Empty string = relative URLs (goes through nginx proxy)
 });
 
+// Dedicated client for refresh requests so we can ensure the correct
+// backend baseURL even when frontend + backend are on different domains.
+const refreshAxios = axios.create({
+    baseURL: apiUrl,
+});
+
 let refreshPromise: Promise<string> | null = null;
 
 const refreshAccessToken = async (): Promise<string> => {
@@ -18,8 +24,7 @@ const refreshAccessToken = async (): Promise<string> => {
         throw new Error('No refresh token');
     }
 
-    // Use plain axios (no interceptors) to avoid recursive 401 handling.
-    const res = await axios.post('/api/refreshtoken', { token: refreshToken });
+    const res = await refreshAxios.post('/api/refreshtoken', { token: refreshToken });
 
     const newAccessToken = res.data.token as string;
     const newRefreshToken = (res.data.refreshToken as string) || refreshToken;
