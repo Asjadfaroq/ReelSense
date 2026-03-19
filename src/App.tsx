@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, ChevronLeft, ChevronRight, Sparkles, ArrowUp } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 
 import Toprated from './Toprated'
 import HeroBanner from './components/HeroBanner'
@@ -10,6 +10,7 @@ import MovieCard from './components/MovieCard'
 import Navbar from './components/Navbar'
 import { LLMsContext } from './LLMsContext/LLmscontext.tsx';
 import axiosInstance from './axiosinstance/Axiosinstance.ts'
+import ScrollToTop from './components/ScrollToTop';
 
 export interface Movie {
   id: number;
@@ -27,7 +28,6 @@ function App() {
   let [page, setpage] = useState(1)
   let [search, setsearch] = useState("")
   let [searchTerm, setsearchTerm] = useState("")
-  let [showScrollTop, setShowScrollTop] = useState(false)
   let llms = useContext(LLMsContext)
 
   let searchFetch = async () => {
@@ -74,33 +74,9 @@ function App() {
     }
   }, [searchTerm, refetch]); // Dependency array ensures refetch runs only when searchTerm changes
 
-  useEffect(() => {
-    let rafId: number | null = null;
-    const showThreshold = 360;
-    const hideThreshold = 260;
-
-    const handleScroll = () => {
-      if (rafId != null) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = null;
-        const y = window.scrollY;
-        setShowScrollTop((prev) => {
-          const next = prev ? y > hideThreshold : y > showThreshold;
-          return prev === next ? prev : next;
-        });
-      });
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true } as any);
-    handleScroll();
-    return () => {
-      window.removeEventListener('scroll', handleScroll as any);
-      if (rafId != null) window.cancelAnimationFrame(rafId);
-    };
-  }, [])
-
-  // Get featured movies from the data if available
-  const featuredMovies = data?.data.results ? data.data.results.slice(0, 5) : [];
+  // Get featured movies from the data if available (memoized to keep HeroBanner stable)
+  const results = data?.data?.results;
+  const featuredMovies = useMemo(() => (results ? results.slice(0, 5) : []), [results]);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-slate-100 font-sans selection:bg-orange-500/30">
@@ -419,21 +395,7 @@ function App() {
         </div>
       </footer>
 
-      {/* Floating Action Button */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-8 right-8 w-12 h-12 bg-orange-600 text-white rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center hover:bg-orange-500 transition-colors z-50"
-            title="Back to top"
-          >
-            <ArrowUp size={24} />
-          </motion.button>
-        )}
-      </AnimatePresence>
+      <ScrollToTop />
     </div>
   )
 }

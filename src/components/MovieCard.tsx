@@ -1,3 +1,4 @@
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
@@ -58,4 +59,4 @@ const MovieCard = ({ movie, linkPath, state }: MovieCardProps) => {
   );
 };
 
-export default MovieCard;
+export default memo(MovieCard);
