@@ -30,7 +30,8 @@ async function handleloginuser(req, res) {
         let refreshT = refreshtoken({email: user.email , id: user._id , createdAt: Date.now()})
         let token = generateToken({email: user.email , id: user._id , createdAt: Date.now()})
 
-        // Store hash of refresh token for rotation (so only the latest refresh token is valid)
+
+        
         const refreshTokenHash = crypto.createHash('sha256').update(refreshT).digest('hex');
         user.refreshTokenHash = refreshTokenHash;
         await user.save();
