@@ -1,5 +1,5 @@
 let usersignup = require('../model/signup');
-const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { generateToken , refreshtoken } = require('../service/security');
 const { validateLoginData } = require('../utils/validation');
 const bcrypt = require('bcrypt');
@@ -34,6 +34,12 @@ async function handleloginuser(req, res) {
         // Generate JWT token and refresh token 
         let refreshT = refreshtoken({email: user.email , id: user._id , createdAt: Date.now()})
         let token = generateToken({email: user.email , id: user._id , createdAt: Date.now()})
+
+        // Store hash of refresh token for rotation (so only the latest refresh token is valid)
+        const refreshTokenHash = crypto.createHash('sha256').update(refreshT).digest('hex');
+        user.refreshTokenHash = refreshTokenHash;
+        await user.save();
+
         return res.status(200).json({message: "login success" , token: token, refreshToken: refreshT});
 
        

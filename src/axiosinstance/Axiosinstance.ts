@@ -10,6 +10,28 @@ const axiosInstance = axios.create({
     baseURL: apiUrl, // Empty string = relative URLs (goes through nginx proxy)
 });
 
+let refreshPromise: Promise<string> | null = null;
+
+const refreshAccessToken = async (): Promise<string> => {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) {
+        throw new Error('No refresh token');
+    }
+
+    // Use plain axios (no interceptors) to avoid recursive 401 handling.
+    const res = await axios.post('/api/refreshtoken', { token: refreshToken });
+
+    const newAccessToken = res.data.token as string;
+    const newRefreshToken = (res.data.refreshToken as string) || refreshToken;
+
+    localStorage.setItem('token', newAccessToken);
+    localStorage.setItem('refreshToken', newRefreshToken);
+
+    // Update default header so future requests use the fresh access token.
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+    return newAccessToken;
+};
+
 // Attach access token to every request
 axiosInstance.interceptors.request.use(
     (config : any) => {
@@ -33,15 +55,13 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const refreshToken = localStorage.getItem('refreshToken');
-                if (!refreshToken) throw new Error('No refresh token');
+                if (!refreshPromise) {
+                    refreshPromise = refreshAccessToken().finally(() => {
+                        refreshPromise = null;
+                    });
+                }
 
-                const res = await axios.post('/api/refreshtoken', { token: refreshToken });
-
-                const newToken = res.data.token;
-                console.log("New token received:", newToken);
-                localStorage.setItem('token', newToken);
-                localStorage.removeItem('refreshToken');
+                const newToken = await refreshPromise;
 
                 // update headers
                 axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
@@ -55,6 +75,7 @@ axiosInstance.interceptors.response.use(
                 setTimeout(() => {
                     window.location.href = '/login';
                 }, 1000); // wait 1s so logs stay visible
+                return Promise.reject(refreshError);
             }
         }
 
