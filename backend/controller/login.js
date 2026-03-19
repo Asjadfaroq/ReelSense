@@ -8,7 +8,6 @@ async function handleloginuser(req, res) {
     try{
         let {email , password} = req.body;
 
-        // Validate login data
         const validation = validateLoginData({ email, password });
         if (!validation.isValid) {
             return res.status(400).json({ message: validation.message });
