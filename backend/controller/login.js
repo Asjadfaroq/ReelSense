@@ -27,7 +27,6 @@ async function handleloginuser(req, res) {
             return res.status(400).json({message: "Invalid credentials"})
         }
 
-        // Generate JWT token and refresh token 
         let refreshT = refreshtoken({email: user.email , id: user._id , createdAt: Date.now()})
         let token = generateToken({email: user.email , id: user._id , createdAt: Date.now()})
 
