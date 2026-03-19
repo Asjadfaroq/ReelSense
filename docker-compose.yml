@@ -11,8 +11,9 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./env.sh:/docker-entrypoint.d/40-env.sh
     environment:
-      - API_URL=http://localhost:5000
-      - BACKEND_URL=http://localhost:5000
+      # Leave API_URL empty so the React app uses relative /api/... URLs,
+      # which nginx forwards to the backend container.
+      - API_URL=
       - APP_ENV=production
     restart: unless-stopped
     networks:

@@ -21,8 +21,13 @@ const {authmiddleware} = require('./middleware/authmiddleware');
 server.use(helmet());
 
 // Configure CORS to allow requests from your frontend domain
+const corsOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,https://movieapp-1-9vz5.onrender.com,http://localhost')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)
+
 server.use(cors({
-  origin: ['http://localhost:5173', 'https://movieapp-1-9vz5.onrender.com', 'http://localhost'],
+  origin: corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
