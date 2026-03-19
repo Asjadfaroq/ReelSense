@@ -20,17 +20,21 @@ const Navbar = () => {
 
   // Handle scroll event to change navbar appearance
   useEffect(() => {
+    let rafId: number | null = null;
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      if (rafId != null) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        const next = window.scrollY > 50;
+        setIsScrolled((prev) => (prev === next ? prev : next));
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true } as any);
+    handleScroll();
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll as any);
+      if (rafId != null) window.cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -55,23 +59,47 @@ const Navbar = () => {
   return (
     <nav
       className={twMerge(
-        'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-transparent',
+        'fixed top-0 left-0 w-full z-50 transition-colors duration-300 border-b border-transparent py-4',
         isScrolled
-          ? 'bg-slate-900/90 backdrop-blur-md border-slate-800 shadow-lg py-3'
-          : 'bg-transparent py-5'
+          ? 'bg-slate-900/90 backdrop-blur-md border-slate-800 shadow-lg'
+          : 'bg-transparent'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center group">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center group">
               <span className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
-              ReelSense
-            </span>
-            <span className="ml-1 text-sm font-semibold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              AI
-            </span>
-          </Link>
+                ReelSense
+              </span>
+              <span className="ml-1 text-sm font-semibold bg-gradient-to-r from-orange-400 to-amber-200 bg-clip-text text-transparent">
+                AI
+              </span>
+            </Link>
+
+            {/* Session action moved next to logo */}
+            <div className="hidden md:flex items-center">
+              {isLoggedIn ? (
+                <button
+                  type="button"
+                  onClick={() => auth?.logout()}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40"
+                >
+                  <User size={16} />
+                  <span>Logout</span>
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40"
+                >
+                  <User size={16} />
+                  <span>Login</span>
+                </Link>
+              )}
+            </div>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -106,24 +134,6 @@ const Navbar = () => {
               <button className="text-slate-300 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5">
                 <Search size={20} />
               </button>
-              {isLoggedIn ? (
-                <button
-                  type="button"
-                  onClick={() => auth?.logout()}
-                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40"
-                >
-                  <User size={16} />
-                  <span>Logout</span>
-                </button>
-              ) : (
-                <Link
-                  to="/login"
-                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40"
-                >
-                  <User size={16} />
-                  <span>Login</span>
-                </Link>
-              )}
             </div>
           </div>
 

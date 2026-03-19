@@ -58,78 +58,122 @@ const Toprated = () => {
 
   if (isLoading) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center text-slate-400">
-        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="animate-pulse">Loading top rated masterpieces...</p>
+      <div className="py-8">
+        <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-[0_0_70px_rgba(249,115,22,0.10)]">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-orange-500/10 rounded-xl border border-orange-400/20">
+              <Trophy className="w-6 h-6 text-orange-300" />
+            </div>
+            <h2 className="text-xl font-bold bg-gradient-to-r from-orange-300 to-amber-300 bg-clip-text text-transparent">
+              Top Rated TV Shows
+            </h2>
+          </div>
+          <div className="py-10 flex flex-col items-center justify-center text-slate-400">
+            <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <p className="animate-pulse">Loading top rated masterpieces...</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="py-12 text-center text-red-400 bg-red-500/10 rounded-xl border border-red-500/20 mx-4">
-        <p>Error loading top rated movies: {error.message}</p>
+      <div className="py-8">
+        <div className="rounded-3xl border border-red-400/20 bg-red-500/10 backdrop-blur-xl p-6 mx-2">
+          <p className="text-red-200 font-medium">Error loading Top Rated TV Shows: {error.message}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <section id="top-rated-section" className="space-y-8 py-8">
-      <div className="flex items-center gap-3 mb-8 px-4">
-        <div className="p-2 bg-yellow-500/10 rounded-lg">
-          <Trophy className="w-6 h-6 text-yellow-500" />
+    <section id="top-rated-section" className="py-8">
+      <div className="mx-4 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-[0_0_90px_rgba(249,115,22,0.10)]">
+        <div className="flex items-start justify-between gap-6 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-orange-500/10 rounded-2xl border border-orange-400/20">
+              <Trophy className="w-6 h-6 text-orange-300" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-300 to-amber-300 bg-clip-text text-transparent">
+                Top Rated TV Shows
+              </h2>
+              <p className="mt-1 text-sm text-slate-300/90">
+                Curated picks with high ratings. Page <span className="font-semibold text-orange-300">{page}</span>.
+              </p>
+            </div>
+          </div>
+
+          {/* Pagination (header) */}
+          <div className="hidden sm:flex items-center gap-3 bg-slate-900/60 border border-slate-800 rounded-2xl p-1">
+            <button
+              onClick={handlePreviousPage}
+              disabled={page === 1}
+              className="p-2 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300"
+              aria-label="Previous page"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <div className="px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-400/20 text-orange-200 font-semibold text-sm">
+              {page} / {totalPages}
+            </div>
+            <button
+              onClick={handleNextPage}
+              disabled={page === totalPages}
+              className="p-2 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300"
+              aria-label="Next page"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-          Top Rated TV Shows
-        </h2>
-      </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-4"
-      >
-        {data && data.data.results.map((movie: any, index: number) => (
-          <motion.div
-            key={movie.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-          >
-            <MovieCard
-              movie={movie}
-              linkPath={"/top-detail"}
-              state={{ movie }}
-            />
-          </motion.div>
-        ))}
-      </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-2 sm:px-4"
+        >
+          {data && data.data.results.map((movie: any, index: number) => (
+            <motion.div
+              key={movie.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <MovieCard
+                movie={movie}
+                linkPath={"/top-detail"}
+                state={{ movie }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
 
-      {/* Pagination */}
-      <div className="flex justify-center mt-12 px-4">
-        <div className="flex items-center gap-4 bg-slate-900/80 backdrop-blur-sm p-2 rounded-xl border border-slate-800 shadow-xl">
-          <button
-            onClick={handlePreviousPage}
-            disabled={page === 1}
-            className="p-2 hover:bg-slate-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300 hover:text-white group"
-            title="Previous Page"
-          >
-            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-          </button>
-
-          <span className="px-4 font-medium text-slate-300 min-w-[100px] text-center">
-            Page <span className="text-yellow-500 font-bold">{page}</span> of {totalPages}
-          </span>
-
-          <button
-            onClick={handleNextPage}
-            disabled={page === totalPages}
-            className="p-2 hover:bg-slate-800 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300 hover:text-white group"
-            title="Next Page"
-          >
-            <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
-          </button>
+        {/* Pagination (mobile/extra) */}
+        <div className="sm:hidden flex justify-center mt-8">
+          <div className="flex items-center gap-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-1">
+            <button
+              onClick={handlePreviousPage}
+              disabled={page === 1}
+              className="p-2 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300"
+              aria-label="Previous page"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <div className="px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-400/20 text-orange-200 font-semibold text-sm">
+              {page}
+            </div>
+            <button
+              onClick={handleNextPage}
+              disabled={page === totalPages}
+              className="p-2 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300"
+              aria-label="Next page"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
       </div>
     </section>

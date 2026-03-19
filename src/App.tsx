@@ -75,15 +75,28 @@ function App() {
   }, [searchTerm, refetch]); // Dependency array ensures refetch runs only when searchTerm changes
 
   useEffect(() => {
+    let rafId: number | null = null;
+    const showThreshold = 360;
+    const hideThreshold = 260;
+
     const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollTop(true)
-      } else {
-        setShowScrollTop(false)
-      }
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+      if (rafId != null) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        const y = window.scrollY;
+        setShowScrollTop((prev) => {
+          const next = prev ? y > hideThreshold : y > showThreshold;
+          return prev === next ? prev : next;
+        });
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true } as any);
+    handleScroll();
+    return () => {
+      window.removeEventListener('scroll', handleScroll as any);
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
   }, [])
 
   // Get featured movies from the data if available
@@ -251,66 +264,105 @@ function App() {
 
         {/* Movie List Section */}
         <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-white border-l-4 border-orange-500 pl-4">Popular Movies</h2>
-            <div className="flex items-center gap-2 bg-slate-900 rounded-lg p-1 border border-slate-800">
-              <button
-                onClick={handlepreviouspage}
-                disabled={page <= 1}
-                className="p-2 hover:bg-slate-800 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300 hover:text-white"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <span className="px-3 font-medium text-slate-300">Page {page}</span>
-              <button
-                onClick={handlepage}
-                className="p-2 hover:bg-slate-800 rounded-md transition-colors text-slate-300 hover:text-white"
-              >
-                <ChevronRight size={20} />
-              </button>
+          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-[0_0_90px_rgba(249,115,22,0.10)]">
+            <div className="flex items-start justify-between gap-6 mb-6">
+              <div>
+                <div className="text-xs font-semibold tracking-widest text-orange-200/90 uppercase">
+                  Trending
+                </div>
+                <h2 className="mt-1 text-2xl font-bold text-white">
+                  Popular Movies
+                </h2>
+                <p className="mt-2 text-sm text-slate-300/90">
+                  Fresh picks from the catalog. Page <span className="text-orange-300 font-semibold">{page}</span>.
+                </p>
+              </div>
+
+              <div className="hidden sm:flex items-center gap-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-1">
+                <button
+                  onClick={handlepreviouspage}
+                  disabled={page <= 1}
+                  className="p-2 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <div className="px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-400/20 text-orange-200 font-semibold text-sm">
+                  {page}
+                </div>
+                <button
+                  onClick={handlepage}
+                  className="p-2 rounded-xl hover:bg-slate-800 transition-colors text-slate-300"
+                  aria-label="Next page"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
             </div>
-          </div>
 
-          {dataerror && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-300 p-4 rounded-xl text-sm">
-              Error loading movies: {(dataerror as any)?.message || 'Unknown error'}
+            {dataerror && (
+              <div className="mb-6 bg-red-500/10 border border-red-500/20 text-red-300 p-4 rounded-xl text-sm">
+                Error loading movies: {(dataerror as any)?.message || 'Unknown error'}
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {dataisloading
+                ? [...Array(10)].map((_, index) => (
+                    <div
+                      key={index}
+                      className="bg-slate-900/50 backdrop-blur-sm rounded-xl h-[420px] animate-pulse border border-slate-800"
+                    />
+                  ))
+                : data?.data?.results?.map((movie: Movie) => (
+                    <MovieCard
+                      key={movie.id}
+                      movie={movie}
+                      linkPath={`/${movie.id}`}
+                    />
+                  ))}
             </div>
-          )}
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {dataisloading
-              ? [...Array(10)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="bg-slate-900/50 backdrop-blur-sm rounded-xl h-[420px] animate-pulse border border-slate-800"
-                  />
-                ))
-              : data?.data?.results?.map((movie: Movie) => (
-                  <MovieCard
-                    key={movie.id}
-                    movie={movie}
-                    linkPath={`/${movie.id}`}
-                  />
-                ))}
-          </div>
+            <div className="flex items-center justify-between mt-10 gap-4">
+              <div className="sm:hidden flex items-center gap-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-1">
+                <button
+                  onClick={handlepreviouspage}
+                  disabled={page <= 1}
+                  className="p-2 rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-slate-300"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <div className="px-4 py-2 rounded-xl bg-orange-500/10 border border-orange-400/20 text-orange-200 font-semibold text-sm">
+                  {page}
+                </div>
+                <button
+                  onClick={handlepage}
+                  className="p-2 rounded-xl hover:bg-slate-800 transition-colors text-slate-300"
+                  aria-label="Next page"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
 
-          {/* Bottom Pagination */}
-          <div className="flex justify-center mt-12">
-            <div className="flex items-center gap-4 bg-slate-900/80 backdrop-blur-sm p-2 rounded-xl border border-slate-800 shadow-xl">
-              <button
-                onClick={handlepreviouspage}
-                disabled={page <= 1}
-                className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                Previous
-              </button>
-              <span className="font-bold text-orange-300 px-2">Page {page}</span>
-              <button
-                onClick={handlepage}
-                className="px-6 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg font-medium transition-colors shadow-lg shadow-orange-500/20"
-              >
-                Next
-              </button>
+              <div className="flex-1 hidden sm:block" />
+
+              {/* Bottom CTA-style pagination */}
+              <div className="hidden sm:flex items-center gap-4">
+                <button
+                  onClick={handlepreviouspage}
+                  disabled={page <= 1}
+                  className="px-6 py-2 rounded-2xl bg-slate-900/70 border border-slate-800 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-colors font-medium"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={handlepage}
+                  className="px-6 py-2 rounded-2xl bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 font-semibold shadow-lg shadow-orange-500/20 transition-all"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -343,8 +395,8 @@ function App() {
             <div>
               <h3 className="text-lg font-semibold text-white mb-4">Contact Us</h3>
               <ul className="space-y-2 text-slate-400">
-                <li>info@reelsense.ai</li>
-                <li>+1 (123) 456-7890</li>
+                <li>asjadfarooq22@gmail.com</li>
+                <li>+966 50 8630876</li>
                 <li>Hollywood, CA</li>
               </ul>
               <div className="flex gap-4 mt-6">
