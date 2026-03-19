@@ -21,7 +21,6 @@ async function handleloginuser(req, res) {
             return res.status(400).json({message: "Invalid credentials"})
         }
 
-        // Compare password with bcrypt
         const isValidPassword = await bcrypt.compare(password, user.password);
         if(!isValidPassword)
         {
