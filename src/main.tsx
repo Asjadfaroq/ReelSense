@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import {
-  createHashRouter,
+  createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 
@@ -17,7 +17,7 @@ import About from './components/About.tsx';
 import { LLMsProvider } from './LLMsContext/LLmscontext.tsx';
 
 const queryClient = new QueryClient();
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <LLMsProvider><AuthProvider>

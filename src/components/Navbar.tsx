@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Menu, X, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import AuthContext from '../authContext/authcontext';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const auth = useContext(AuthContext);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Check if the current route is active
   const isActive = (path: string) => {
@@ -29,6 +32,14 @@ const Navbar = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+  }, []);
+
+  // Keep navbar actions in sync with login/logout
+  useEffect(() => {
+    const update = () => setIsLoggedIn(!!localStorage.getItem('token'));
+    update();
+    window.addEventListener('storage', update);
+    return () => window.removeEventListener('storage', update);
   }, []);
 
   // Toggle mobile menu
@@ -95,13 +106,24 @@ const Navbar = () => {
               <button className="text-slate-300 hover:text-white transition-colors p-2 rounded-full hover:bg-white/5">
                 <Search size={20} />
               </button>
-              <Link
-                to="/login"
-                className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
-              >
-                <User size={16} />
-                <span>Login</span>
-              </Link>
+              {isLoggedIn ? (
+                <button
+                  type="button"
+                  onClick={() => auth?.logout()}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
+                >
+                  <User size={16} />
+                  <span>Logout</span>
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
+                >
+                  <User size={16} />
+                  <span>Login</span>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -160,14 +182,28 @@ const Navbar = () => {
                 </Link>
               </div>
               <div className="pt-4">
-                <Link
-                  to="/login"
-                  onClick={toggleMobileMenu}
-                  className="flex items-center justify-center w-full space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white px-4 py-3 rounded-xl font-medium shadow-lg"
-                >
-                  <User size={18} />
-                  <span>Login</span>
-                </Link>
+                {isLoggedIn ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      toggleMobileMenu();
+                      auth?.logout();
+                    }}
+                    className="flex items-center justify-center w-full space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white px-4 py-3 rounded-xl font-medium shadow-lg"
+                  >
+                    <User size={18} />
+                    <span>Logout</span>
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={toggleMobileMenu}
+                    className="flex items-center justify-center w-full space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white px-4 py-3 rounded-xl font-medium shadow-lg"
+                  >
+                    <User size={18} />
+                    <span>Login</span>
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>
