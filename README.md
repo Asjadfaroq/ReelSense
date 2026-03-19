@@ -1,116 +1,138 @@
-# ReelSense: AI-Enhanced Movie Discovery Platform
+<p align="center">
+  <img src="public/cineverse-logo.svg" alt="ReelSense Logo" width="80" height="80" />
+</p>
 
-## 📝 Project Overview
+<h1 align="center">ReelSense</h1>
 
-ReelSense is a full-stack, AI-enhanced movie discovery platform built with the MERN stack (MongoDB, Express.js, React, Node.js). The application seamlessly integrates with the TMDB and Gemini APIs to provide intelligent movie insights and real-time search functionality. It is designed with a focus on security, performance, and a smooth user experience.
+<p align="center">
+  <strong>AI‑enhanced, premium movie discovery experience</strong><br/>
+  MERN + Gemini + TMDB · Modern glassmorphism UI · Secure JWT auth
+</p>
+
+<p align="center">
+  <a href="https://reel-sense.vercel.app/login"><strong>▶ Live App</strong></a> ·
+  <a href="https://linkedin.com/in/asjadfarooqconnect"><strong>LinkedIn</strong></a> ·
+  <a href="https://asjadfarooq.netlify.app/"><strong>Portfolio</strong></a>
+</p>
+
+---
+
+## 📝 Overview
+
+ReelSense is an AI‑driven movie and TV discovery platform built with the **MERN** stack.  
+It combines **TMDB** data with **Gemini** to generate human‑readable explanations for why each title matches the user’s taste, wrapped in a clean, cinematic UI.
+
+The project is designed for:
+- **Security** – proper JWT access + refresh tokens, rotation, and server‑side API key usage.
+- **Performance** – React Query caching, pagination, and carefully optimized scroll/UI behaviour.
+- **Experience** – bright glassmorphism design, responsive layout, and polished micro‑interactions.
 
 ---
 
 ## ✨ Key Features
 
-* **AI-Enhanced Movie Insights**: Integrates with the Gemini API to provide intelligent movie insights and recommendations using prompt engineering.
-* **Real-Time Search**: Allows users to find movies instantly with real-time search functionality.
-* **Comprehensive Security**: Features a robust JWT authentication system with a new refresh token implementation. Key API calls, such as the one for "top rated" movies, have been moved to the backend to enhance security and prevent direct exposure of API keys.
-* **Performance Optimization**: Utilizes **React Query caching** and **smart pagination** to boost data efficiency by 40% and significantly reduce server load.
-* **Code Quality**: Achieved a Lighthouse score of 80+ by implementing **lazy loading** and **responsive images**, ensuring fast load times and full accessibility.
-* **Rate Limiting**: Implements a rate limiter for the Gemini API calls, restricting usage to 7 calls per day to manage costs and prevent abuse.
-* **Mobile-Friendly Design**: The application is fully responsive, providing a consistent user experience across all devices.
+- **AI‑enhanced suggestions** powered by Gemini with clear “why this fits” reasoning.
+- **Real‑time search** with debounced queries and rich TMDB data.
+- **Secure authentication** using access + refresh JWTs, rotation, and concurrency‑safe refresh logic.
+- **Protected content** (Top Rated TV Shows, Popular Movies, detailed pages) behind auth.
+- **Performance‑oriented UI** with React Query, memoized components, and smooth scroll behaviour.
+- **Responsive, premium design**: orange/amber glassmorphism theme optimized for desktop and mobile.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠 Tech Stack
 
 ### Frontend
-* **React.js**: For building the user interface.
-* **React Query**: For server-state management and data fetching.
-* **TypeScript**: For type safety.
-* **Context API**: To handle state management efficiently.
-* **Tailwind CSS**: A utility-first CSS framework for modern styling.
+- **React + TypeScript** (Vite)
+- **React Router DOM**
+- **@tanstack/react-query**
+- **Tailwind CSS**
+- **Framer Motion**, **lucide‑react**
+- Context providers for **auth** and **LLM suggestions**
 
 ### Backend
-* **Node.js & Express.js**: For the server-side logic and RESTful API.
-* **MongoDB Atlas**: A cloud-based NoSQL database for storing user and application data.
-* **Mongoose**: An object modeling tool for MongoDB.
-* **JWT & bcrypt**: For secure user authentication and password hashing.
-* **TMDB API**: To fetch movie data.
-* **Gemini API**: For AI-powered movie insights.
+- **Node.js + Express**
+- **MongoDB Atlas + Mongoose**
+- **JWT / bcrypt** for auth
+- **Axios** for TMDB + Gemini integration
+- **Helmet / CORS** hardening
 
-### DevOps & Deployment
-* **Docker & Docker Compose**: The entire application is containerized for seamless deployment across different environments.
-* **Nginx**: Used as a reverse proxy to handle requests and improve performance.
-* **Render/Netlify**: The application is configured for deployment on cloud platforms like Render and Netlify.
+### Deployment
+- **Frontend**: Vercel – `https://reel-sense.vercel.app`
+- **Backend**: Render Web Service (Node)
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Running Locally
 
-Follow these steps to set up and run the project locally using Docker.
+Clone the repository:
 
-### Prerequisites
-* [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
-* TMDB API key
-* Google Gemini API key
+```bash
+git clone https://github.com/Asjadfaroq/ReelSense.git
+cd ReelSense
+```
 
-### Installation
+### 1. Backend
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/Asjadfaroq/ReelSense.git
-    cd ReelSense
-    ```
+Create `backend/.env`:
 
-2.  **Set up environment variables**:
-    * Create a `.env` file in the root directory.
-    * Add your API keys and MongoDB connection string.
-    
-    ```
-    MONGO_URI=<Your MongoDB Atlas Connection String>
-    JWT_SECRET=<Your JWT Secret>
-    TMDB_API_KEY=<Your TMDB API Key>
-    GEMINI_API_KEY=<Your Gemini API Key>
-    ```
+```env
+MONGODB_URI=<your MongoDB Atlas connection string>
+GEMINI_API_KEY=<your Gemini API key>
+JWT_SECRET=<strong random secret>
+JWT_REFRESH_SECRET=<strong random secret>
+PORT=5001
+```
 
-3.  **Run with Docker Compose**:
-    ```bash
-    docker-compose up --build
-    ```
-
-The application will now be running and accessible through your local host.
-
-### Local development (no Docker)
-
-Run **two terminals**. Do **not** put `# comments` on the same line as `npm install` (npm will error).
-
-**Terminal 1 — backend** (uses `backend/.env`; port **5001** on macOS avoids AirPlay on 5000):
+Install and start:
 
 ```bash
 cd backend
-npm run dev
+npm install
+npm start
 ```
 
-(`npm run dev` installs deps then starts — avoids errors from pasting `npm install # comment` on one line. After that, `npm start` alone is enough.)
+The API health check will be available at: `http://localhost:5001/api/health`.
 
-**Terminal 2 — frontend:**
+### 2. Frontend
+
+In another terminal from the project root:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open **http://localhost:5173**. API health: **http://localhost:5001/api/health**.
+Then open: `http://localhost:5173`.
+
+---
+
+## 🌐 Production Setup (Vercel + Render)
+
+- **Backend (Render)**  
+  - Environment variables: `MONGODB_URI`, `GEMINI_API_KEY`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `PORT`,  
+    `CORS_ORIGINS=https://reel-sense.vercel.app`
+
+- **Frontend (Vercel)**  
+  - Build command: `npm run build`  
+  - Output directory: `dist`  
+  - Env: `VITE_API_URL=https://<your-render-backend-url>`
+
+CI/CD is handled via **GitHub Actions + Render deploy hook**, so pushes to `main` automatically redeploy the backend.
 
 ---
 
 ## 🤝 Contribution
 
-Contributions are highly appreciated! If you have suggestions or find bugs, please feel free to open an issue or submit a pull request.
+Suggestions, issues, and pull requests are welcome.  
+If you have ideas to improve the UI, performance, or security model, feel free to open a discussion or PR.
 
 ---
 
-## 📧 Contact
+## 👤 Author
 
-**Asjad Farooq**
-* **Portfolio**: https://asjadfarooq.netlify.app/
-* **LinkedIn**: https://www.linkedin.com/in/asjadfarooqconnect/
+**Asjad Farooq**  
+- Portfolio: <https://asjadfarooq.netlify.app/>  
+- LinkedIn: <https://linkedin.com/in/asjadfarooqconnect>
 
-Feel free to connect for any questions or collaborations!
+Feel free to reach out for collaboration, feedback, or opportunities.
