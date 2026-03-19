@@ -10,8 +10,6 @@ const axiosInstance = axios.create({
     baseURL: apiUrl, // Empty string = relative URLs (goes through nginx proxy)
 });
 
-// Dedicated client for refresh requests so we can ensure the correct
-// backend baseURL even when frontend + backend are on different domains.
 const refreshAxios = axios.create({
     baseURL: apiUrl,
 });
