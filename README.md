@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://reel-sense.vercel.app/login"><strong>▶ Live App</strong></a> ·
+  <a href="https://reel-sense.vercel.app/#/login"><strong>▶ Live App</strong></a> ·
   <a href="https://linkedin.com/in/asjadfarooqconnect"><strong>LinkedIn</strong></a> ·
   <a href="https://asjadfarooq.netlify.app/"><strong>Portfolio</strong></a>
 </p>
