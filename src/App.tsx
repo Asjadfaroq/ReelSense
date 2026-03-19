@@ -356,7 +356,11 @@ function App() {
             </div>
           </div>
           <div className="border-t border-slate-800 pt-8 text-center text-slate-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} CineVerse AI. All rights reserved.</p>
+            <p>
+              &copy; 2026 ReelSense
+              <br />
+              Developed by Asjad Farooq
+            </p>
           </div>
         </div>
       </footer>
