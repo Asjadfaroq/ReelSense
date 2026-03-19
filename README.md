@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="public/cineverse-logo.svg" alt="ReelSense Logo" width="80" height="80" />
-</p>
-
 <h1 align="center">ReelSense</h1>
 
 <p align="center">
