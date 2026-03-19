@@ -13,7 +13,6 @@ async function handleloginuser(req, res) {
             return res.status(400).json({ message: validation.message });
         }
 
-        // Find user by email
         let user = await usersignup.findOne({ email: email });
         if(!user) {
             user = await usersignup.findOne({ username: email });
