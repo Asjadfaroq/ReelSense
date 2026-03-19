@@ -15,9 +15,12 @@ async function handleloginuser(req, res) {
         }
 
         // Find user by email
-        let user = await usersignup.findOne({email: email})
-        if(!user)
-        {
+        let user = await usersignup.findOne({ email: email });
+        // Allow login using username (frontend may send username in the "email" field)
+        if(!user) {
+            user = await usersignup.findOne({ username: email });
+        }
+        if(!user) {
             return res.status(400).json({message: "Invalid credentials"})
         }
 

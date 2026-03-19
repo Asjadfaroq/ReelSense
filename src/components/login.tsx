@@ -12,24 +12,10 @@ const Login = () => {
     password: ''
   });
 
-  // Validation state
-  const [isEmailValid, setIsEmailValid] = useState(false);
-
-  // Email validation function
-  const validateEmail = (email: string) => {
-    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return emailRegex.test(email);
-  };
-
   // Handle input changes
   const handlechange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInput((prev) => ({...prev, [name]: value}));
-
-    // Validate email on change
-    if (name === 'email') {
-      setIsEmailValid(validateEmail(value));
-    }
   };
 
   // Handle form submission
@@ -72,11 +58,11 @@ const Login = () => {
             <h2 className="text-3xl font-bold text-gray-900">Sign In</h2>
             <p className="mt-2 text-gray-600">Access your movie collection</p>
             <p className='mt-2 text-gray-600'>
-            you can use this email and password for testing:
+            you can use this email/username and password for testing:
             <br />
-            email: test@test.com
+            email/username: asjad_farooq
             <br />
-            password: 123456
+            password: abc123
           </p>
           </div>
 
@@ -101,8 +87,8 @@ const Login = () => {
                   <input
                     id="email"
                     className="peer w-full px-4 py-3 border-b-2 border-gray-300 placeholder-transparent focus:outline-none focus:border-purple-500 transition-colors"
-                    type="email"
-                    placeholder="Email"
+                    type="text"
+                    placeholder="Email or Username"
                     value={input.email}
                     onChange={handlechange}
                     name="email"
@@ -159,9 +145,9 @@ const Login = () => {
 
             <button
               onClick={handlesubmit}
-              disabled={auth?.authStatus?.isloading || !isEmailValid || !input.password}
+              disabled={auth?.authStatus?.isloading || !input.password}
               className={`w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-full hover:opacity-90 font-medium text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 ${
-                auth?.authStatus?.isloading || !isEmailValid || !input.password ? 'opacity-70 cursor-not-allowed' : ''
+                auth?.authStatus?.isloading || !input.password ? 'opacity-70 cursor-not-allowed' : ''
               }`}
             >
               {auth?.authStatus?.isloading ? 'Signing in...' : 'Sign In'}

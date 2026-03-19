@@ -105,9 +105,11 @@ function validateLoginData(userData) {
         return { isValid: false, message: "Missing required fields" };
     }
     
-    // Validate email
-    if (!validateEmail(email)) {
-        return { isValid: false, message: "Invalid email format" };
+    // Validate either a real email or a username (dev/test-friendly login)
+    const isEmail = validateEmail(email);
+    const usernameValidation = validateUsername(email);
+    if (!isEmail && !usernameValidation.isValid) {
+        return { isValid: false, message: "Invalid email or username format" };
     }
     
     return { isValid: true, message: "" };

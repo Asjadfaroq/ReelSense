@@ -77,6 +77,28 @@ Follow these steps to set up and run the project locally using Docker.
 
 The application will now be running and accessible through your local host.
 
+### Local development (no Docker)
+
+Run **two terminals**. Do **not** put `# comments` on the same line as `npm install` (npm will error).
+
+**Terminal 1 — backend** (uses `backend/.env`; port **5001** on macOS avoids AirPlay on 5000):
+
+```bash
+cd backend
+npm run dev
+```
+
+(`npm run dev` installs deps then starts — avoids errors from pasting `npm install # comment` on one line. After that, `npm start` alone is enough.)
+
+**Terminal 2 — frontend:**
+
+```bash
+npm install
+npm run dev
+```
+
+Open **http://localhost:5173**. API health: **http://localhost:5001/api/health**.
+
 ---
 
 ## 🤝 Contribution
