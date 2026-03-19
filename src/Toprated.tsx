@@ -59,7 +59,7 @@ const Toprated = () => {
   if (isLoading) {
     return (
       <div className="py-12 flex flex-col items-center justify-center text-slate-400">
-        <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4"></div>
         <p className="animate-pulse">Loading top rated masterpieces...</p>
       </div>
     );

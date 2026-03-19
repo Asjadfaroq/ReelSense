@@ -65,8 +65,8 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center group">
-            <span className="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
-              CineVerse
+              <span className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
+              ReelSense
             </span>
             <span className="ml-1 text-sm font-semibold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               AI
@@ -91,7 +91,7 @@ const Navbar = () => {
                     {isActive(link.path) && (
                       <motion.div
                         layoutId="navbar-indicator"
-                        className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-full"
+                        className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full"
                         initial={false}
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                       />
@@ -110,7 +110,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => auth?.logout()}
-                  className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40"
                 >
                   <User size={16} />
                   <span>Logout</span>
@@ -118,7 +118,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40"
                 >
                   <User size={16} />
                   <span>Login</span>
@@ -189,7 +189,7 @@ const Navbar = () => {
                       toggleMobileMenu();
                       auth?.logout();
                     }}
-                    className="flex items-center justify-center w-full space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white px-4 py-3 rounded-xl font-medium shadow-lg"
+                    className="flex items-center justify-center w-full space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 text-slate-950 px-4 py-3 rounded-xl font-medium shadow-lg"
                   >
                     <User size={18} />
                     <span>Logout</span>
@@ -198,7 +198,7 @@ const Navbar = () => {
                   <Link
                     to="/login"
                     onClick={toggleMobileMenu}
-                    className="flex items-center justify-center w-full space-x-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white px-4 py-3 rounded-xl font-medium shadow-lg"
+                    className="flex items-center justify-center w-full space-x-2 bg-gradient-to-r from-orange-400 to-amber-300 text-slate-950 px-4 py-3 rounded-xl font-medium shadow-lg"
                   >
                     <User size={18} />
                     <span>Login</span>

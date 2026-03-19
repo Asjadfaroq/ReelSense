@@ -41,12 +41,14 @@ function App() {
   }
 
   let handlepage = () => {
-    let nextpage = data?.data.page + 1
+    const currentPage = data?.data?.page ?? page
+    let nextpage = currentPage + 1
     setpage(nextpage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   let handlepreviouspage = () => {
-    let nextpage = data?.data.page - 1
+    const currentPage = data?.data?.page ?? page
+    let nextpage = currentPage - 1
     setpage(nextpage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -84,49 +86,29 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  if (dataisloading) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-        <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-lg font-medium animate-pulse">Loading movies...</p>
-      </div>
-    );
-  }
-
-  if (dataerror) {
-    return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-red-500">Error loading movies: {dataerror.message}</div>;
-  }
-
-  if (searchIsLoading) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-        <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p className="text-lg font-medium animate-pulse">Searching the universe...</p>
-      </div>
-    );
-  }
-
-  if (searchError) {
-    return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-red-500">Error loading search results: {searchError.message}</div>;
-  }
-
   // Get featured movies from the data if available
   const featuredMovies = data?.data.results ? data.data.results.slice(0, 5) : [];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-neutral-950 text-slate-100 font-sans selection:bg-orange-500/30">
       {/* Navbar */}
       <Navbar />
 
       <main className="pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
         {/* Hero Banner */}
         <section>
-          <HeroBanner movies={featuredMovies} interval={5000} />
+          {dataisloading ? (
+            <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/10 via-transparent to-amber-500/10" />
+            </div>
+          ) : (
+            <HeroBanner movies={featuredMovies} interval={5000} />
+          )}
         </section>
 
         {/* Search Section */}
         <section className="relative z-20 -mt-8 md:-mt-16 mx-auto max-w-3xl">
-          <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-700 rounded-2xl p-2 shadow-2xl flex flex-col sm:flex-row gap-2">
+          <div className="bg-slate-900/70 backdrop-blur-xl border border-slate-700 rounded-2xl p-2 shadow-2xl flex flex-col sm:flex-row gap-2">
             <div className="relative flex-grow">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
               <input
@@ -140,14 +122,21 @@ function App() {
             </div>
             <button
               onClick={searchbuttton}
-              className="bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 whitespace-nowrap"
+              className="bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-8 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 whitespace-nowrap"
             >
               Search
             </button>
           </div>
           <p className="text-xs text-slate-400 mt-3 text-center">
-            Try: <span className="text-indigo-400">"action movies with plot twists"</span> or <span className="text-pink-400">"feel-good comedies from the 90s"</span>
+            Try: <span className="text-orange-300">"action movies with plot twists"</span> or <span className="text-amber-300">"feel-good comedies from the 90s"</span>
           </p>
+
+          {searchIsLoading && (
+            <p className="text-xs text-slate-300/80 mt-2 text-center">Searching the universe...</p>
+          )}
+          {searchError && (
+            <p className="text-xs text-red-400/90 mt-2 text-center">Search error: {searchError.message}</p>
+          )}
         </section>
 
         {/* LLM Suggestions Section */}
@@ -160,10 +149,10 @@ function App() {
               className="space-y-6"
             >
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-indigo-500/10 rounded-lg">
-                  <Sparkles className="w-6 h-6 text-indigo-400" />
+                <div className="p-2 bg-orange-500/10 rounded-lg">
+                  <Sparkles className="w-6 h-6 text-orange-300" />
                 </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-300 to-amber-300 bg-clip-text text-transparent">
                   AI Powered Recommendations
                 </h2>
               </div>
@@ -189,21 +178,21 @@ function App() {
             className="space-y-6"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-indigo-500/10 rounded-lg">
-                <Sparkles className="w-6 h-6 text-indigo-400" />
+              <div className="p-2 bg-orange-500/10 rounded-lg">
+                <Sparkles className="w-6 h-6 text-orange-300" />
               </div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-orange-300 to-amber-300 bg-clip-text text-transparent">
                 AI Recommendations
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {llms.responsesuggestion.map((suggestion, index) => (
-                <motion.div
+                  <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 overflow-hidden hover:border-indigo-500/30 transition-colors group flex flex-col h-full"
+                  className="bg-slate-900/50 backdrop-blur-sm rounded-xl border border-slate-800 overflow-hidden hover:border-orange-500/30 transition-colors group flex flex-col h-full"
                 >
                   <div className="relative aspect-[2/3] overflow-hidden">
                     {suggestion.poster_path ? (
@@ -220,12 +209,12 @@ function App() {
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60" />
                   </div>
                   <div className="p-5 flex flex-col flex-grow">
-                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">{suggestion.title}</h3>
+                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-orange-300 transition-colors">{suggestion.title}</h3>
                     <p className="text-sm text-slate-400 mb-4 flex-grow">{suggestion.reason}</p>
                     {suggestion.id ? (
                       <Link
                         to={suggestion.is_tv ? `/tv/${suggestion.id}` : `/${suggestion.id}`}
-                        className="block w-full py-2.5 bg-slate-800 hover:bg-indigo-600 text-white text-center rounded-lg font-medium transition-colors"
+                        className="block w-full py-2.5 bg-slate-800 hover:bg-orange-600 text-white text-center rounded-lg font-medium transition-colors"
                       >
                         View Details
                       </Link>
@@ -247,7 +236,7 @@ function App() {
         {/* Search Results Section */}
         {searchData?.data.results && searchData.data.results.length > 0 && (
           <section className="space-y-6">
-            <h2 className="text-2xl font-bold text-white border-l-4 border-indigo-500 pl-4">Search Results</h2>
+            <h2 className="text-2xl font-bold text-white border-l-4 border-orange-500 pl-4">Search Results</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
               {searchData.data.results.map((movie: Movie) => (
                 <MovieCard
@@ -263,7 +252,7 @@ function App() {
         {/* Movie List Section */}
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-white border-l-4 border-pink-500 pl-4">Popular Movies</h2>
+            <h2 className="text-2xl font-bold text-white border-l-4 border-orange-500 pl-4">Popular Movies</h2>
             <div className="flex items-center gap-2 bg-slate-900 rounded-lg p-1 border border-slate-800">
               <button
                 onClick={handlepreviouspage}
@@ -282,14 +271,27 @@ function App() {
             </div>
           </div>
 
+          {dataerror && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-300 p-4 rounded-xl text-sm">
+              Error loading movies: {(dataerror as any)?.message || 'Unknown error'}
+            </div>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {data && data.data.results.map((movie: Movie) => (
-              <MovieCard
-                key={movie.id}
-                movie={movie}
-                linkPath={`/${movie.id}`}
-              />
-            ))}
+            {dataisloading
+              ? [...Array(10)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="bg-slate-900/50 backdrop-blur-sm rounded-xl h-[420px] animate-pulse border border-slate-800"
+                  />
+                ))
+              : data?.data?.results?.map((movie: Movie) => (
+                  <MovieCard
+                    key={movie.id}
+                    movie={movie}
+                    linkPath={`/${movie.id}`}
+                  />
+                ))}
           </div>
 
           {/* Bottom Pagination */}
@@ -302,10 +304,10 @@ function App() {
               >
                 Previous
               </button>
-              <span className="font-bold text-indigo-400 px-2">Page {page}</span>
+              <span className="font-bold text-orange-300 px-2">Page {page}</span>
               <button
                 onClick={handlepage}
-                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors shadow-lg shadow-indigo-500/20"
+                className="px-6 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg font-medium transition-colors shadow-lg shadow-orange-500/20"
               >
                 Next
               </button>
@@ -323,7 +325,7 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             <div>
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <span className="bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">CineVerse</span> AI
+                <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">ReelSense</span> AI
               </h3>
               <p className="text-slate-400 leading-relaxed">
                 Your intelligent movie discovery platform. Our advanced AI analyzes your preferences to recommend films and shows tailored just for you.
@@ -332,22 +334,22 @@ function App() {
             <div>
               <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
               <ul className="space-y-2 text-slate-400">
-                <li><Link to="/" className="hover:text-indigo-400 transition-colors">Home</Link></li>
-                <li><Link to="/" className="hover:text-indigo-400 transition-colors">Movies</Link></li>
-                <li><Link to="/top-detail" className="hover:text-indigo-400 transition-colors">TV Shows</Link></li>
-                <li><Link to="/top-detail" className="hover:text-indigo-400 transition-colors">Top Rated</Link></li>
+                <li><Link to="/" className="hover:text-orange-300 transition-colors">Home</Link></li>
+                <li><Link to="/" className="hover:text-orange-300 transition-colors">Movies</Link></li>
+                <li><Link to="/top-detail" className="hover:text-orange-300 transition-colors">TV Shows</Link></li>
+                <li><Link to="/top-detail" className="hover:text-orange-300 transition-colors">Top Rated</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-white mb-4">Contact Us</h3>
               <ul className="space-y-2 text-slate-400">
-                <li>info@cineverse.ai</li>
+                <li>info@reelsense.ai</li>
                 <li>+1 (123) 456-7890</li>
                 <li>Hollywood, CA</li>
               </ul>
               <div className="flex gap-4 mt-6">
                 {['twitter', 'facebook', 'instagram', 'github'].map((social) => (
-                  <Link key={social} to="/about" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition-all duration-300">
+                  <Link key={social} to="/about" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-orange-600 hover:text-white transition-all duration-300">
                     <span className="sr-only">{social}</span>
                     <div className="w-5 h-5 bg-current rounded-sm opacity-50" />
                   </Link>
@@ -373,7 +375,7 @@ function App() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-8 right-8 w-12 h-12 bg-indigo-600 text-white rounded-full shadow-lg shadow-indigo-500/30 flex items-center justify-center hover:bg-indigo-500 transition-colors z-50"
+            className="fixed bottom-8 right-8 w-12 h-12 bg-orange-600 text-white rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center hover:bg-orange-500 transition-colors z-50"
             title="Back to top"
           >
             <ArrowUp size={24} />

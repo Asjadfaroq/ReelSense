@@ -77,11 +77,11 @@ const HeroBanner = ({ movies, interval = 5000 }: HeroBannerProps) => {
                 <span className="font-semibold text-white">{movie.vote_average.toFixed(1)}</span>
               </div>
               <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
-                <Calendar className="w-4 h-4 text-indigo-400" />
+                <Calendar className="w-4 h-4 text-orange-300" />
                 <span>{movie.release_date?.split('-')[0]}</span>
               </div>
               <div className="flex items-center gap-1 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10">
-                <Eye className="w-4 h-4 text-pink-400" />
+                <Eye className="w-4 h-4 text-amber-300" />
                 <span>{Math.round(movie.popularity)} views</span>
               </div>
             </div>
@@ -92,7 +92,7 @@ const HeroBanner = ({ movies, interval = 5000 }: HeroBannerProps) => {
 
             <div className="flex items-center gap-4">
               <Link to={`/${movie.id}`}>
-                <button className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white px-8 py-3 rounded-full font-semibold transition-all duration-300 shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-1">
+                <button className="flex items-center gap-2 bg-gradient-to-r from-orange-400 to-amber-300 hover:from-orange-300 hover:to-yellow-200 text-slate-950 px-8 py-3 rounded-full font-semibold transition-all duration-300 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 hover:-translate-y-1">
                   <Play className="w-5 h-5 fill-current" />
                   Watch Now
                 </button>

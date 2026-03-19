@@ -42,14 +42,14 @@ const MovieCard = ({ movie, linkPath, state }: MovieCardProps) => {
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-            <button className="w-full py-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg font-semibold text-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+            <button className="w-full py-2 bg-gradient-to-r from-orange-400 to-amber-300 text-slate-950 rounded-lg font-semibold text-sm shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
               View Details
             </button>
           </div>
         </div>
 
         <div className="p-4">
-          <h3 className="text-white font-semibold text-sm md:text-base line-clamp-1 group-hover:text-indigo-400 transition-colors">
+          <h3 className="text-white font-semibold text-sm md:text-base line-clamp-1 group-hover:text-orange-300 transition-colors">
             {title}
           </h3>
         </div>
