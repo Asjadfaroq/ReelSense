@@ -20,23 +20,36 @@ const {authmiddleware} = require('./middleware/authmiddleware');
 // Security headers with Helmet (Basic protection)
 server.use(helmet());
 
-// Configure CORS to allow requests from your frontend domain
-const corsOrigins = (process.env.CORS_ORIGINS || 'http://localhost:5173,https://movieapp-1-9vz5.onrender.com,http://localhost')
-  .split(',')
-  .map((s) => s.trim())
-  .filter(Boolean)
+// Configure CORS to allow requests from your frontend domain.
+// Note: CORS origin matching is exact, so we normalize config values to reduce
+// issues with trailing slashes/whitespace in environment variables.
+const rawCorsOrigins =
+  process.env.CORS_ORIGINS ||
+  'http://localhost:5173,https://movieapp-1-9vz5.onrender.com,http://localhost';
 
-server.use(cors({
-  origin: corsOrigins,
+const corsOrigins = rawCorsOrigins
+  .split(',')
+  .map((s) => s.trim().replace(/\/+$/, '')) // normalize e.g. https://foo.com/ -> https://foo.com
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (requestOrigin, callback) => {
+    // Non-browser requests may not have an Origin header.
+    if (!requestOrigin) return callback(null, true);
+    const normalizedOrigin = requestOrigin.replace(/\/+$/, '');
+    return callback(null, corsOrigins.length === 0 || corsOrigins.includes(normalizedOrigin));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
-  optionsSuccessStatus: 204
-}));
+  optionsSuccessStatus: 204,
+};
 
-// Explicitly handle OPTIONS preflight requests
-server.options('*', cors());
+server.use(cors(corsOptions));
+
+// Explicitly handle OPTIONS preflight requests using the same CORS config.
+server.options('*', cors(corsOptions));
 
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
